@@ -28,19 +28,19 @@ std::string infx2pstfx(std::string inf) {
         if ((inf[i] <= '9') && (inf[i] >= '0')) {
             p += inf[i];
             p += " ";
-        }else {
+        } else {
             int k1 = Prior(inf[i]);
             int k2 = Prior(st.get());
             if (inf[i] == '(' || (k1 > k2) || st.isEmpty()) {
                 st.push(inf[i]);
-            }else if (inf[i] == ')') {
+            } else if (inf[i] == ')') {
                 char a = st.pop();
                 while (a != '(') {
                     p += a;
                     p += " ";
                     a = st.pop();
                 }
-            }else if (Prior(inf[i] <= st.get())) {
+            } else if (Prior(inf[i] <= st.get())) {
                     while (Prior(inf[i] <= st.get()) && !st.isEmpty()) {
                         char a = st.pop();
                         p += a;
@@ -67,7 +67,7 @@ int eval(std::string pref) {
         if ((a <= '9') && (a >= '0')) {
             int b = static_cast<int>(a - '0');
                 temp.push(b);
-        }else {
+        } else {
             int znac;
             int f = temp.get();
             temp.pop();
