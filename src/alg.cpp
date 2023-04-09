@@ -19,6 +19,9 @@ int Prior(char d) {
     }
     return -1;
 }
+
+
+
 std::string infx2pstfx(std::string inf) {
  TStack<char, 100> st1;
     std::string str = "";
