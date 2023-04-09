@@ -10,17 +10,17 @@ class TStack {
     int top;
 
  public:
-    TStack() : top(-1) {arr=new T[size];}
+    TStack(): top(-1) { arr=new T[size]; }
     void push(T value) {
         if (isFull())
             throw std::string("Full");
-        else 
+        else
             arr[++top] = value;
     }
     const T& pop() {
         if (isEmpty())
             throw std::string("Empty");
-        else 
+        else
             return arr[top--];
     }
     const T& get() const {
