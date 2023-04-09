@@ -2,16 +2,17 @@
 #include <string>
 #include <map>
 #include "tstack.h"
-int Prior(char d) {
-    switch (d) {
-    case '(':
-        return 0;
-    case ')':
-        return 1;
+
+int Prior(char c) {
+    switch (c) {
     case '+':
         return 2;
     case '-':
         return 2;
+    case '(':
+        return 0;
+    case ')':
+        return 1;
     case '*':
         return 3;
     case '/':
@@ -20,88 +21,74 @@ int Prior(char d) {
     return -1;
 }
 
-
-
 std::string infx2pstfx(std::string inf) {
- TStack<char, 100> st1;
-    std::string str = "";
-    int res = 0;
-    for (char a : inf) {
-        bool truefalse = true;
-        if (Prior(a) == 0) {
-            st1.push(a);
-            truefalse = false;
-        }
-        if (Prior(a) == -1) {
-            str = str + a;
-            str = str + ' ';
-            truefalse = false;
-        }
-        if (Prior(a) > Prior(st1.get())) {
-            st1.push(a);
-            truefalse = false;
-        }
-        if (st1.isEmpty() && Prior(a) != -1) {
-            st1.push(a);
-            truefalse = false;
-        }
-        if (a != ')' && truefalse) {
-            while (Prior(st1.get()) >= Prior(a)) {
-                str = str + st1.pop();
-                str = str + ' ';
-            }
-            st1.push(a);
-        }
-        if (a == ')') {
-            while (st1.get() != '(') {
-                str = str + st1.pop();
-                str = str + ' ';
-            }
-            st1.pop();
-        }
-        if (res == inf.size() - 1) {
-            while (!st1.isEmpty()) {
-                str = str + st1.pop();
-                if (st1.pri() != -1) {
-                    str = str + ' ';
+    std::string p;
+    TStack<char, 100> st;
+    for (int i = 0; i < inf.size(); i++) {
+        if ((inf[i] <= '9') && (inf[i] >= '0')) {
+            p += inf[i];
+            p += " ";
+        }else {
+            int k1 = Prior(inf[i]);
+            int k2 = Prior(st.get());
+            if (inf[i] == '(' || (k1 > k2) || st.isEmpty()) {
+                st.push(inf[i]);
+            }else if (inf[i] == ')') {
+                char a = st.pop();
+                while (a != '(') {
+                    p += a;
+                    p += " ";
+                    a = st.pop();
+                }
+            }else if (Prior(inf[i] <= st.get())) {
+                    while (Prior(inf[i] <= st.get()) && !st.isEmpty()) {
+                        char a = st.pop();
+                        p += a;
+                        p += " ";
+                    }
+                    st.push(inf[i]);
                 }
             }
         }
-        ++res;
+    while (!st.isEmpty()) {
+        char a = st.pop();
+            p += a;
+            p += " ";
     }
-    return str;
+    p.pop_back();
+    return p;
 }
 
-int eval(std::string post) {
-        TStack<int, 100> st2;
-        for (char s : post) {
-            if (s == '+') {
-                int a = st2.pop();
-                a = a + st2.pop();
-                st2.push(a);
-            }
-            if (s == '-') {
-                int a = st2.pop();
-                a = st2.pop() - a;
-                st2.push(a);
-            }
-            if (s == '*') {
-                int a = st2.pop();
-                a = a * st2.pop();
-                st2.push(a);
-            }
-            if (s == '/') {
-                int a = st2.pop();
-                a = st2.pop() / a;
-                st2.push(a);
-            }
-            if (s == ' ') {
+int eval(std::string pref) {
+    TStack <int, 100> temp;
+    for (char a : pref) {
+        if (a == ' ')
                 continue;
+        if ((a <= '9') && (a >= '0')) {
+            int b = static_cast<int>(a - '0');
+                temp.push(b);
+        }else {
+            int znac;
+            int f = temp.get();
+            temp.pop();
+            int sec = temp.get();
+            temp.pop();
+            switch (a) {
+            case '+':
+                znac = sec + f;
+                break;
+            case '-':
+                znac = sec - f;
+                break;
+            case '*':
+                znac = sec * f;
+                break;
+            case '/':
+                znac = sec / f;
+                break;
             }
-            if ((s - '0') > 0) {
-                int a = s - '0';
-                st2.push(a);
-            }
+            temp.push(znac);
         }
-        return st2.get();
+    }
+    return temp.pop();
 }
