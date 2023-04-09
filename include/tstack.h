@@ -5,12 +5,12 @@
 
 template<typename T, int size>
 class TStack {
-private:
+ private:
     T* arr;
     int top;
-    
-public:
-    TStack() : top(-1) {arr=newT[size];}
+
+ public:
+    TStack() : top(-1) {arr=new T[size];}
     void push(T value) {
         if (isFull())
             throw std::string("Full");
